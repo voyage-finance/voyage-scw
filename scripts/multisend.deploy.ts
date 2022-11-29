@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+import { ethers } from 'hardhat';
 import {
   SALT,
   FACTORY_ADDRESS,
@@ -6,7 +6,7 @@ import {
   deploy,
   deployFactory,
   isContract,
-} from "./utils";
+} from './utils';
 
 const options = { gasLimit: 7000000 };
 
@@ -18,13 +18,13 @@ async function main() {
     const deployedFactory = await deployFactory(provider);
   }
 
-  const multiSend = await ethers.getContractFactory("MultiSend");
+  const multiSend = await ethers.getContractFactory('MultiSend');
   const multiSendBytecode = `${multiSend.bytecode}`;
   const multiSendComputedAddr = getDeployedAddress(
     multiSendBytecode,
     ethers.BigNumber.from(SALT)
   );
-  console.log("multiSend Computed Address: ", multiSendComputedAddr);
+  console.log('multiSend Computed Address: ', multiSendComputedAddr);
 
   const ismultiSendDeployed = await isContract(multiSendComputedAddr, provider); // true (deployed on-chain)
   if (!ismultiSendDeployed) {
@@ -33,26 +33,26 @@ async function main() {
       multiSendBytecode,
       ethers.BigNumber.from(SALT)
     );
-    console.log("multiSendDeployedAddr ", multiSendDeployedAddr);
+    console.log('multiSendDeployedAddr ', multiSendDeployedAddr);
     const multiSendDeploymentStatus =
       multiSendComputedAddr === multiSendDeployedAddr
-        ? "Deployed Successfully"
+        ? 'Deployed Successfully'
         : false;
 
-    console.log("multiSendDeploymentStatus ", multiSendDeploymentStatus);
+    console.log('multiSendDeploymentStatus ', multiSendDeploymentStatus);
 
     if (!multiSendDeploymentStatus) {
-      console.log("Invalid Multisend Deployment");
+      console.log('Invalid Multisend Deployment');
     }
   } else {
     console.log(
-      "multiSend is Already deployed with address ",
+      'multiSend is Already deployed with address ',
       multiSendComputedAddr
     );
   }
 
   const multiSendCallOnly = await ethers.getContractFactory(
-    "MultiSendCallOnly"
+    'MultiSendCallOnly'
   );
   const multiSendCallOnlyBytecode = `${multiSendCallOnly.bytecode}`;
   const multiSendCallOnlyComputedAddr = getDeployedAddress(
@@ -60,7 +60,7 @@ async function main() {
     ethers.BigNumber.from(SALT)
   );
   console.log(
-    "multiSend Callonly Computed Address: ",
+    'multiSend Callonly Computed Address: ',
     multiSendCallOnlyComputedAddr
   );
 
@@ -75,25 +75,25 @@ async function main() {
       ethers.BigNumber.from(SALT)
     );
     console.log(
-      "multiSendCallOnlyDeployedAddr ",
+      'multiSendCallOnlyDeployedAddr ',
       multiSendCallOnlyDeployedAddr
     );
     const multiSendCallOnlyDeploymentStatus =
       multiSendCallOnlyComputedAddr === multiSendCallOnlyDeployedAddr
-        ? "Deployed Successfully"
+        ? 'Deployed Successfully'
         : false;
 
     console.log(
-      "multiSendCallOnlyDeploymentStatus ",
+      'multiSendCallOnlyDeploymentStatus ',
       multiSendCallOnlyDeploymentStatus
     );
 
     if (!multiSendCallOnlyDeploymentStatus) {
-      console.log("Invalid Multisend Call Only Deployment");
+      console.log('Invalid Multisend Call Only Deployment');
     }
   } else {
     console.log(
-      "multiSend Call Only is Already deployed with address ",
+      'multiSend Call Only is Already deployed with address ',
       multiSendCallOnlyComputedAddr
     );
   }

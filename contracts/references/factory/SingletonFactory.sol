@@ -1,10 +1,9 @@
 /**
  *Submitted for verification at Etherscan.io on 2020-03-30
-*/
+ */
 /* https://eips.ethereum.org/EIPS/eip-2470 */
 
 pragma solidity ^0.8.0;
-
 
 /**
  * @title Singleton Factory (EIP-2470)
@@ -12,7 +11,8 @@ pragma solidity ^0.8.0;
  * @author Ricardo Guilherme Schmidt (Status Research & Development GmbH)
  */
 contract SingletonFactory {
-      event Deployed(address addr, uint256 salt);
+    event Deployed(address addr, uint256 salt);
+
     /**
      * @notice Deploys `_initCode` using `_salt` for defining the deterministic address.
      * @param _initCode Initialization code.
@@ -25,7 +25,12 @@ contract SingletonFactory {
     {
         // solhint-disable-next-line no-inline-assembly
         assembly {
-            createdContract := create2(0, add(_initCode, 0x20), mload(_initCode), _salt)
+            createdContract := create2(
+                0,
+                add(_initCode, 0x20),
+                mload(_initCode),
+                _salt
+            )
         }
         emit Deployed(createdContract, _salt);
     }

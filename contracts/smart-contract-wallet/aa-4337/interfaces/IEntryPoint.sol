@@ -14,7 +14,6 @@ import "./IStakeManager.sol";
 import "./IAggregator.sol";
 
 interface IEntryPoint is IStakeManager {
-
     /***
      * An event emitted after each successful request
      * @param requestId - unique identifier for the request (hash its entire content, except signature).
@@ -25,7 +24,15 @@ interface IEntryPoint is IStakeManager {
      * @param actualGasPrice - the actual gas price the sender agreed to pay.
      * @param success - true if the sender transaction succeeded, false if reverted.
      */
-    event UserOperationEvent(bytes32 indexed requestId, address indexed sender, address indexed paymaster, uint256 nonce, uint256 actualGasCost, uint256 actualGasPrice, bool success);
+    event UserOperationEvent(
+        bytes32 indexed requestId,
+        address indexed sender,
+        address indexed paymaster,
+        uint256 nonce,
+        uint256 actualGasCost,
+        uint256 actualGasPrice,
+        bool success
+    );
 
     /**
      * An event emitted if the UserOperation "callData" reverted with non-zero length
@@ -34,7 +41,12 @@ interface IEntryPoint is IStakeManager {
      * @param nonce the nonce used in the request
      * @param revertReason - the return bytes from the (reverted) call to "callData".
      */
-    event UserOperationRevertReason(bytes32 indexed requestId, address indexed sender, uint256 nonce, bytes revertReason);
+    event UserOperationRevertReason(
+        bytes32 indexed requestId,
+        address indexed sender,
+        uint256 nonce,
+        bytes revertReason
+    );
 
     /**
      * a custom revert error of handleOps, to identify the offending op.
@@ -56,7 +68,6 @@ interface IEntryPoint is IStakeManager {
     //UserOps handled, per aggregator
     struct UserOpsPerAggregator {
         UserOperation[] userOps;
-
         // aggregator address
         IAggregator aggregator;
         // aggregated signature
@@ -71,7 +82,10 @@ interface IEntryPoint is IStakeManager {
      * @param ops the operations to execute
      * @param beneficiary the address to receive the fees
      */
-    function handleOps(UserOperation[] calldata ops, address payable beneficiary) external;
+    function handleOps(
+        UserOperation[] calldata ops,
+        address payable beneficiary
+    ) external;
 
     /**
      * Execute a batch of UserOperation with Aggregators
@@ -87,12 +101,15 @@ interface IEntryPoint is IStakeManager {
      * generate a request Id - unique identifier for this request.
      * the request ID is a hash over the content of the userOp (except the signature), the entrypoint and the chainid.
      */
-    function getRequestId(UserOperation calldata userOp) external view returns (bytes32);
+    function getRequestId(UserOperation calldata userOp)
+        external
+        view
+        returns (bytes32);
 
     /**
-    * Simulate a call to wallet.validateUserOp and paymaster.validatePaymasterUserOp.
-    * Validation succeeds if the call doesn't revert.
-    * @dev The node must also verify it doesn't use banned opcodes, and that it doesn't reference storage outside the wallet's data.
+     * Simulate a call to wallet.validateUserOp and paymaster.validatePaymasterUserOp.
+     * Validation succeeds if the call doesn't revert.
+     * @dev The node must also verify it doesn't use banned opcodes, and that it doesn't reference storage outside the wallet's data.
      *      In order to split the running opcodes of the wallet (validateUserOp) from the paymaster's validatePaymasterUserOp,
      *      it should look for the NUMBER opcode at depth=1 (which itself is a banned opcode)
      * @param userOp the user operation to validate.
@@ -106,8 +123,19 @@ interface IEntryPoint is IStakeManager {
      * @return sigForAggregation  - only if has actualAggregator:  this value is returned from IAggregator.validateUserOpSignature, and should be passed to aggregator.aggregateSignatures
      * @return offChainSigInfo - if has actualAggregator, and offChainSigCheck is true, this value should be used by the off-chain signature code (e.g. it contains the sender's publickey)
      */
-    function simulateValidation(UserOperation calldata userOp, bool offChainSigCheck)
-    external returns (uint256 preOpGas, uint256 prefund, address actualAggregator, bytes memory sigForUserOp, bytes memory sigForAggregation, bytes memory offChainSigInfo);
+    function simulateValidation(
+        UserOperation calldata userOp,
+        bool offChainSigCheck
+    )
+        external
+        returns (
+            uint256 preOpGas,
+            uint256 prefund,
+            address actualAggregator,
+            bytes memory sigForUserOp,
+            bytes memory sigForAggregation,
+            bytes memory offChainSigInfo
+        );
 
     /**
      * Get counterfactual sender address.
@@ -123,6 +151,8 @@ interface IEntryPoint is IStakeManager {
      *  (that is, a wallet/paymaster are allowed to access their own deposit balance on the
      *  EntryPoint's storage, but no other account)
      */
-    function getSenderStorage(address sender) external view returns (uint256[] memory senderStorageCells);
+    function getSenderStorage(address sender)
+        external
+        view
+        returns (uint256[] memory senderStorageCells);
 }
-

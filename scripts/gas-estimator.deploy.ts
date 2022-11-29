@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+import { ethers } from 'hardhat';
 import {
   SALT,
   FACTORY_ADDRESS,
@@ -7,7 +7,7 @@ import {
   deployFactory,
   encodeParam,
   isContract,
-} from "./utils";
+} from './utils';
 
 const options = { gasLimit: 7000000, gasPrice: 70000000000 };
 
@@ -21,13 +21,13 @@ async function main() {
     const deployedFactory = await deployFactory(provider);
   }
 
-  const gasEstimator = await ethers.getContractFactory("GasEstimator");
+  const gasEstimator = await ethers.getContractFactory('GasEstimator');
   const gasEstimatorBytecode = `${gasEstimator.bytecode}`;
   const gasEstimatorComputedAddr = getDeployedAddress(
     gasEstimatorBytecode,
     ethers.BigNumber.from(SALT)
   );
-  console.log("gasEstimator Computed Address: ", gasEstimatorComputedAddr);
+  console.log('gasEstimator Computed Address: ', gasEstimatorComputedAddr);
 
   const isgasEstimatorDeployed = await isContract(
     gasEstimatorComputedAddr,
@@ -39,20 +39,20 @@ async function main() {
       gasEstimatorBytecode,
       ethers.BigNumber.from(SALT)
     );
-    console.log("gasEstimatorDeployedAddr ", gasEstimatorDeployedAddr);
+    console.log('gasEstimatorDeployedAddr ', gasEstimatorDeployedAddr);
     const gasEstimatorDeploymentStatus =
       gasEstimatorComputedAddr === gasEstimatorDeployedAddr
-        ? "Deployed Successfully"
+        ? 'Deployed Successfully'
         : false;
 
-    console.log("gasEstimatorDeploymentStatus ", gasEstimatorDeploymentStatus);
+    console.log('gasEstimatorDeploymentStatus ', gasEstimatorDeploymentStatus);
 
     if (!gasEstimatorDeploymentStatus) {
-      console.log("Invalid GasEstimator Deployment");
+      console.log('Invalid GasEstimator Deployment');
     }
   } else {
     console.log(
-      "GasEstimator is Already deployed with address ",
+      'GasEstimator is Already deployed with address ',
       gasEstimatorComputedAddr
     );
   }

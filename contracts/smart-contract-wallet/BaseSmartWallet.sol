@@ -10,20 +10,20 @@ import "./aa-4337/interfaces/IEntryPoint.sol";
 import "./common/Enum.sol";
 
 struct Transaction {
-        address to;
-        uint256 value;
-        bytes data;
-        Enum.Operation operation;
-        uint256 targetTxGas;
-    }
+    address to;
+    uint256 value;
+    bytes data;
+    Enum.Operation operation;
+    uint256 targetTxGas;
+}
 
 struct FeeRefund {
-        uint256 baseGas;
-        uint256 gasPrice; //gasPrice or tokenGasPrice
-        uint256 tokenGasPriceFactor;
-        address gasToken;
-        address payable refundReceiver;
-    }
+    uint256 baseGas;
+    uint256 gasPrice; //gasPrice or tokenGasPrice
+    uint256 tokenGasPriceFactor;
+    address gasToken;
+    address payable refundReceiver;
+}
 
 /**
  * this contract provides the basic logic for implementing the IWallet interface  - validateUserOp
@@ -47,7 +47,12 @@ abstract contract BaseSmartWallet is IWallet {
     /**
      * Validate user's signature and nonce.
      */
-    function validateUserOp(UserOperation calldata userOp, bytes32 requestId, address aggregator, uint256 missingWalletFunds) external override {
+    function validateUserOp(
+        UserOperation calldata userOp,
+        bytes32 requestId,
+        address aggregator,
+        uint256 missingWalletFunds
+    ) external override {
         _requireFromEntryPoint();
         _validateSignature(userOp, requestId, aggregator);
         //during construction, the "nonce" field hold the salt.
@@ -61,8 +66,11 @@ abstract contract BaseSmartWallet is IWallet {
     /**
      * ensure the request comes from the known entrypoint.
      */
-    function _requireFromEntryPoint() internal virtual view {
-        require(msg.sender == address(entryPoint()), "wallet: not from EntryPoint");
+    function _requireFromEntryPoint() internal view virtual {
+        require(
+            msg.sender == address(entryPoint()),
+            "wallet: not from EntryPoint"
+        );
     }
 
     /**
@@ -72,7 +80,11 @@ abstract contract BaseSmartWallet is IWallet {
      *          (also hashes the entrypoint and chain-id)
      * @param aggregator the current aggregator. can be ignored by wallets that don't use aggregators
      */
-    function _validateSignature(UserOperation calldata userOp, bytes32 requestId, address aggregator) internal virtual view;
+    function _validateSignature(
+        UserOperation calldata userOp,
+        bytes32 requestId,
+        address aggregator
+    ) internal view virtual;
 
     /**
      * validate the current nonce matches the UserOperation nonce.
@@ -80,7 +92,9 @@ abstract contract BaseSmartWallet is IWallet {
      * called only if initCode is empty (since "nonce" field is used as "salt" on wallet creation)
      * @param userOp the op to validate.
      */
-    function _validateAndUpdateNonce(UserOperation calldata userOp) internal virtual;
+    function _validateAndUpdateNonce(UserOperation calldata userOp)
+        internal
+        virtual;
 
     /**
      * sends to the entrypoint (msg.sender) the missing funds for this transaction.
@@ -92,17 +106,25 @@ abstract contract BaseSmartWallet is IWallet {
      */
     function _payPrefund(uint256 missingWalletFunds) internal virtual {
         if (missingWalletFunds != 0) {
-            (bool success,) = payable(msg.sender).call{value : missingWalletFunds, gas : type(uint256).max}("");
+            (bool success, ) = payable(msg.sender).call{
+                value: missingWalletFunds,
+                gas: type(uint256).max
+            }("");
             (success);
             //ignore failure (its EntryPoint's job to verify, not wallet.)
         }
     }
-    
-    function init(address _owner, address _entryPointAddress, address _handler) external virtual;
+
+    function init(
+        address _owner,
+        address _entryPointAddress,
+        address _handler
+    ) external virtual;
 
     function execTransaction(
         Transaction memory _tx,
         uint256 batchId,
         FeeRefund memory refundInfo,
-        bytes memory signatures) public payable virtual returns (bool success);
+        bytes memory signatures
+    ) public payable virtual returns (bool success);
 }

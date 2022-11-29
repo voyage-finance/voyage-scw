@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+import { ethers } from 'hardhat';
 import {
   SALT,
   FACTORY_ADDRESS,
@@ -6,7 +6,7 @@ import {
   deploy,
   deployFactory,
   isContract,
-} from "./utils";
+} from './utils';
 
 const options = { gasLimit: 7000000 };
 
@@ -19,7 +19,7 @@ async function main() {
   }
 
   const callBackHandler = await ethers.getContractFactory(
-    "DefaultCallbackHandler"
+    'DefaultCallbackHandler'
   );
   const callBackHandlerBytecode = `${callBackHandler.bytecode}`;
   const callBackHandlerComputedAddr = getDeployedAddress(
@@ -27,7 +27,7 @@ async function main() {
     ethers.BigNumber.from(SALT)
   );
   console.log(
-    "CallBack Handler Computed Address: ",
+    'CallBack Handler Computed Address: ',
     callBackHandlerComputedAddr
   );
 
@@ -42,23 +42,23 @@ async function main() {
       ethers.BigNumber.from(SALT)
     );
 
-    console.log("callBackHandlerDeployedAddr ", callBackHandlerDeployedAddr);
+    console.log('callBackHandlerDeployedAddr ', callBackHandlerDeployedAddr);
     const callBackHandlerDeploymentStatus =
       callBackHandlerComputedAddr === callBackHandlerDeployedAddr
-        ? "Deployed Successfully"
+        ? 'Deployed Successfully'
         : false;
 
     console.log(
-      "callBackHandlerDeploymentStatus ",
+      'callBackHandlerDeploymentStatus ',
       callBackHandlerDeploymentStatus
     );
 
     if (!callBackHandlerDeploymentStatus) {
-      console.log("Invalid CallBack Handler Deployment");
+      console.log('Invalid CallBack Handler Deployment');
     }
   } else {
     console.log(
-      "CallBack Handler is Already deployed with address ",
+      'CallBack Handler is Already deployed with address ',
       callBackHandlerComputedAddr
     );
   }

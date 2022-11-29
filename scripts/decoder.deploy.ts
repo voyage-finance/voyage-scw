@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+import { ethers } from 'hardhat';
 import {
   SALT,
   FACTORY_ADDRESS,
@@ -7,7 +7,7 @@ import {
   deployFactory,
   encodeParam,
   isContract,
-} from "./utils";
+} from './utils';
 
 const options = { gasLimit: 7000000, gasPrice: 70000000000 };
 
@@ -21,38 +21,35 @@ async function main() {
     const deployedFactory = await deployFactory(provider);
   }
 
-  const decoder = await ethers.getContractFactory("Decoder");
+  const decoder = await ethers.getContractFactory('Decoder');
   const decoderBytecode = `${decoder.bytecode}`;
   const decoderComputedAddr = getDeployedAddress(
     decoderBytecode,
     ethers.BigNumber.from(SALT)
   );
-  console.log("decoder Computed Address: ", decoderComputedAddr);
+  console.log('decoder Computed Address: ', decoderComputedAddr);
 
-  const isdecoderDeployed = await isContract(
-    decoderComputedAddr,
-    provider
-  ); // true (deployed on-chain)
+  const isdecoderDeployed = await isContract(decoderComputedAddr, provider); // true (deployed on-chain)
   if (!isdecoderDeployed) {
     const decoderDeployedAddr = await deploy(
       provider,
       decoderBytecode,
       ethers.BigNumber.from(SALT)
     );
-    console.log("decoderDeployedAddr ", decoderDeployedAddr);
+    console.log('decoderDeployedAddr ', decoderDeployedAddr);
     const decoderDeploymentStatus =
       decoderComputedAddr === decoderDeployedAddr
-        ? "Deployed Successfully"
+        ? 'Deployed Successfully'
         : false;
 
-    console.log("decoderDeploymentStatus ", decoderDeploymentStatus);
+    console.log('decoderDeploymentStatus ', decoderDeploymentStatus);
 
     if (!decoderDeploymentStatus) {
-      console.log("Invalid decoder Deployment");
+      console.log('Invalid decoder Deployment');
     }
   } else {
     console.log(
-      "decoder is Already deployed with address ",
+      'decoder is Already deployed with address ',
       decoderComputedAddr
     );
   }
